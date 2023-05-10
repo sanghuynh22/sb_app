@@ -3,26 +3,32 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 // const productRoutes = require("./routes/productRoutes");
-// const userRoutes = require("./routes/userRoutes");
-// const messageRoutes = require("./routes/messageRoutes");
-// const videoRoutes = require("./routes/videoRoutes");
+const usersRoutes = require("./routes/usersRoutes");
+const statusRoutes = require("./routes/statusRoutes");
+const storyRoutes = require("./routes/storysRoutes");
+const reelRoutes = require("./routes/reelsRoutes");
+const commentRoutes = require("./routes/commentsRoutes");
+const watchRoutes = require("./routes/watchRoutes");
+const messageRoutes = require("./routes/messagesRoutes");
+const groupRoutes = require("./routes/groupsRoutes");
 // const chatSockets = require("./sockets/chat");
 
 const app = express();
 
-// Enable cross-origin resource sharing (CORS)
 app.use(cors());
-
-// Parse incoming requests with JSON payloads
 app.use(bodyParser.json());
-
+app.use(express.json());
 // Connect to MongoDB database
 
 // Define API endpoints
-// app.use("/api/products", productRoutes);
-// app.use("/api/users", userRoutes);
-// app.use("/api/messages", messageRoutes);
-// app.use("/api/videos", videoRoutes);
+app.use("/api/users", usersRoutes);
+app.use("/api/status", statusRoutes);
+app.use("/api/story", storyRoutes);
+app.use("/api/reel", reelRoutes);
+app.use("/api/comment", commentRoutes);
+app.use("/api/watch", watchRoutes);
+app.use("/api/message", messageRoutes);
+app.use("/api/group", groupRoutes);
 
 // Start the server and listen for incoming connections
 const server = app.listen(3000, () => {
@@ -30,7 +36,7 @@ const server = app.listen(3000, () => {
 });
 mongoose
 	.connect(
-		"mongodb+srv://user1:0939449102@cluster0.1n7kp.mongodb.net/?retryWrites=true&w=majority",
+		"mongodb+srv://user1:0939449102@cluster0.1n7kp.mongodb.net/facebook_app?retryWrites=true&w=majority",
 		{
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
@@ -38,6 +44,3 @@ mongoose
 	)
 	.then(() => console.log("MongoDB connected"))
 	.catch((err) => console.log(err));
-
-// Initialize Socket.IO
-// chatSockets.initialize(server);
