@@ -28,9 +28,12 @@ const UserSchema = mongoose.Schema(
 		avatar: {
 			type: String,
 		},
-		statusHide: {
-			type: [String],
-		},
+		statusHide: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Status",
+			},
+		],
 	},
 	{ collection: "Users" }
 );

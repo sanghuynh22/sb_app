@@ -43,7 +43,7 @@ exports.deleteGroup = async (req, res) => {
 			return res.status(401).json({ message: "Unauthorized" });
 		}
 		await Group.findByIdAndDelete(req.params.id);
-		return res.sendStatus(204);
+		return res.jsonStatus(204);
 	} catch (err) {
 		console.error(err);
 		return res.status(500).json({ message: "Internal server error" });

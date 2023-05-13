@@ -6,7 +6,7 @@ exports.getAllStory = async (req, res) => {
 		res.json(allStory);
 	} catch (error) {
 		console.error(error.message);
-		res.status(500).send("Lỗi server");
+		res.status(500).json("Lỗi server");
 	}
 };
 exports.createStory = async (req, res) => {

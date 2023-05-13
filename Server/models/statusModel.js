@@ -14,10 +14,19 @@ const StatusSchema = mongoose.Schema(
 		image: {
 			type: String,
 		},
-		likes: {
-			type: Array,
-		},
-		date: {
+		likes: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Users",
+			},
+		],
+		comments: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Comments",
+			},
+		],
+		createdAt: {
 			type: Date,
 			default: Date.now,
 		},

@@ -1,5 +1,14 @@
 const Users = require("../models/usersModel");
 
+exports.getAllUsers = async (req, res) => {
+	try {
+		const user = await Users.find().populate("friends");
+		res.status(201).json(user);
+	} catch (err) {
+		console.log(err);
+		res.status(404).json(err);
+	}
+};
 exports.getUser = async (req, res) => {
 	const userId = req.params.id;
 	try {
@@ -7,17 +16,24 @@ exports.getUser = async (req, res) => {
 		res.status(201).json(user);
 	} catch (err) {
 		console.log(err);
-		res.status(404).send(err);
+		res.status(404).json(err);
 	}
 };
 exports.registerUser = async (req, res) => {
 	try {
+		const { username } = req.body;
+		const existingUser = await Users.findOne({ username });
+
+		if (existingUser) {
+			return res.status(400).json("Username đã có người dùng rồi");
+		}
+
 		const newUser = new Users(req.body);
 		const result = await newUser.save();
 		res.status(201).json(result);
 	} catch (err) {
 		console.log(err);
-		res.status(404).send(err);
+		res.status(404).json(err);
 	}
 };
 
@@ -25,11 +41,11 @@ exports.loginUser = async (req, res) => {
 	try {
 		const { username, password } = req.body;
 		const user = await Users.findOne({ username, password });
-		if (!user) return res.status(404).send("User not found");
+		if (!user) return res.status(404).json("User not found");
 		res.status(202).json(user);
 	} catch (err) {
 		console.log(err);
-		res.status(505).send(err);
+		res.status(505).json(err);
 	}
 };
 
@@ -50,11 +66,11 @@ exports.addFriend = async (req, res) => {
 		);
 		if (!requestUser || !userReceive) {
 			console.log("requestUser, req.body", requestUser, req.body);
-			return res.status(404).send("Users not found");
+			return res.status(404).json("Users not found");
 		}
-		res.status(200).send("requesting friend success!");
+		res.status(200).json("requesting friend success!");
 	} catch (error) {
-		res.status(500).send(error.message);
+		res.status(500).json(error.message);
 	}
 };
 
@@ -63,8 +79,8 @@ exports.acceptFriendRequest = async (req, res) => {
 	try {
 		const friendUser = await Users.findOne({ username: friendUsername });
 		const userAccept = await Users.findOne({ username: username });
-		if (!friendUser) return res.status(404).send("Không tìm thấy người dùng");
-		if (!userAccept) return res.status(404).send("Không tìm thấy người dùng");
+		if (!friendUser) return res.status(404).json("Không tìm thấy người dùng");
+		if (!userAccept) return res.status(404).json("Không tìm thấy người dùng");
 
 		const updatedRequests = friendUser.friendRequest.filter(
 			(request) => request !== username
@@ -96,14 +112,14 @@ exports.acceptFriendRequest = async (req, res) => {
 		res.status(200).json({ updatedFriend, updateduserAccept });
 	} catch (error) {
 		console.log(error);
-		res.status(500).send(error.message);
+		res.status(500).json(error.message);
 	}
 };
 exports.denyFriendRequest = async (req, res) => {
 	const { username, friendUsername } = req.body;
 	try {
 		const friendUser = await Users.findOne({ username: friendUsername });
-		if (!friendUser) return res.status(404).send("Không tìm thấy người dùng");
+		if (!friendUser) return res.status(404).json("Không tìm thấy người dùng");
 
 		const updatedRequests = friendUser.friendRequest.filter(
 			(request) => request !== username
@@ -118,7 +134,7 @@ exports.denyFriendRequest = async (req, res) => {
 		);
 
 		const currentUser = await Users.findOne({ username });
-		if (!currentUser) return res.status(404).send("Không tìm thấy người dùng");
+		if (!currentUser) return res.status(404).json("Không tìm thấy người dùng");
 
 		const updatedReceive = friendUser.friendReceiveRequest.filter(
 			(request) => request !== friendUsername
@@ -133,7 +149,7 @@ exports.denyFriendRequest = async (req, res) => {
 		res.status(200).json({ updatedFriend, updatedCurrentUser });
 	} catch (error) {
 		console.log(error);
-		res.status(500).send(error.message);
+		res.status(500).json(error.message);
 	}
 };
 exports.updateUser = async (req, res) => {
@@ -156,7 +172,7 @@ exports.updateUser = async (req, res) => {
 	}
 };
 exports.hideStatus = async (req, res) => {
-	const { userId, statusId } = req.body;
+	const { userId, statusId } = await req.body;
 
 	try {
 		const user = await Users.findById(userId);
@@ -164,28 +180,21 @@ exports.hideStatus = async (req, res) => {
 			return res.status(404).json({ message: "Không tìm thấy người dùng" });
 		}
 
-		if (user.statusHide.includes(statusId)) {
-			console.log("id bài viết đã được ẩn trước đó");
-			res.status(404).json({ message: "bài viết này đã ẩn rồi !" });
-		} else {
-			user.statusHide.push(statusId);
-			await user.save();
-			console.log("iduser : ", user._id.toString());
-		}
+		user.statusHide.push(statusId);
+		await user.save();
+		console.log("iduser : ", user._id.toString());
 
 		res.status(200).json(user);
 	} catch (error) {
 		console.error(error);
-		res
-			.status(500)
-			.json({ message: "Đã xảy ra lỗi trong quá trình thêm id bài viết" });
+		res.status(500).json({ message: "Đã xảy ra lỗi server" });
 	}
 };
 
 exports.deleteUserByUsername = async (req, res) => {
-	const { username } = req.body;
+	const { userId } = req.body;
 	try {
-		const user = await Users.findOneAndDelete({ username });
+		const user = await Users.findOneAndDelete({ userId });
 		if (!user) res.status(404).json({ message: "người dùng không có" });
 		console.log("user ", user);
 

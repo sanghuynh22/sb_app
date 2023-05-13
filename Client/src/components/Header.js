@@ -7,7 +7,16 @@ import { AiFillHome, AiFillShop } from "react-icons/ai";
 import { FaUserFriends } from "react-icons/fa";
 import { MdSmartDisplay } from "react-icons/md";
 import { CgMenuGridO } from "react-icons/cg";
+import { useDispatch, useSelector } from "react-redux";
+import { authLogout } from "../actions/user/auth";
+import avatar from "../assets/images/avatar-mac-dinh.jpeg";
 const Header = () => {
+	const dispatch = useDispatch();
+	const { currentUser } = useSelector((state) => state.user.auth);
+
+	const handleClickLogOut = () => {
+		dispatch(authLogout());
+	};
 	return (
 		<div className="header">
 			<div className="header_left">
@@ -49,14 +58,14 @@ const Header = () => {
 				</div>
 				<div className="header_right_avatar">
 					<img
-						src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?stp=cp0_dst-png_p80x80&_nc_cat=1&ccb=1-7&_nc_sid=7206a8&_nc_ohc=w00aZTzGsUcAX_z3_yo&_nc_ht=scontent.fsgn2-6.fna&oh=00_AfCJW_vrDqYbadoP46F8lEKn4nP_P1PQb2I-wqvraig6rA&oe=647D4EB8"
+						src={currentUser?.avatar ? currentUser.avatar : avatar}
 						className="header_right_option_avatar"
 					/>
 					<div class="header_right_avatar_sudo">
 						<a href="#" class="profile-link">
 							Profile
 						</a>
-						<a href="#" class="logout-link">
+						<a href="#" class="logout-link" onClick={() => handleClickLogOut()}>
 							Đăng xuất
 						</a>
 					</div>

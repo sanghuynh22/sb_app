@@ -7,9 +7,6 @@ const CommentsSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		location: {
-			type: String,
-		},
 		user: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Users",

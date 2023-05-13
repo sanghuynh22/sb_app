@@ -1,4 +1,5 @@
 const Comment = require("../models/commentsModel");
+const Status = require("../models/statusModel");
 
 exports.getAllComment = async (req, res) => {
 	try {
@@ -6,7 +7,7 @@ exports.getAllComment = async (req, res) => {
 		res.json(allComment);
 	} catch (error) {
 		console.error(error.message);
-		res.status(500).send("Lỗi server");
+		res.status(500).json("Lỗi server");
 	}
 };
 exports.updateComment = async (req, res) => {
@@ -32,9 +33,17 @@ exports.updateComment = async (req, res) => {
 	}
 };
 exports.createComment = async (req, res) => {
+	const { statusId, ...data } = req.body;
 	try {
-		const newComment = new Comment(req.body);
+		const newComment = new Comment(data);
 		const result = await newComment.save();
+
+		await Status.findByIdAndUpdate(
+			req.body.statusId,
+			{ $push: { comments: result._id } },
+			{ new: true }
+		);
+
 		res.status(201).json(result);
 	} catch (err) {
 		console.log(err);

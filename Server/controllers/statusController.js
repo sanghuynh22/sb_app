@@ -2,11 +2,20 @@ const Status = require("../models/statusModel");
 
 exports.readAllStatus = async (req, res) => {
 	try {
-		const allStatus = await Status.find();
+		const allStatus = await Status.find()
+			.populate("user")
+			.populate({
+				path: "comments",
+				populate: {
+					path: "user",
+					select: "-password", // Loại bỏ trường password của user
+				},
+			})
+			.sort({ createdAt: -1 });
 		res.json(allStatus);
 	} catch (error) {
 		console.error(error.message);
-		res.status(500).send("Lỗi server");
+		res.status(500).json("Lỗi server");
 	}
 };
 exports.createStatus = async (req, res) => {
@@ -23,8 +32,8 @@ exports.createStatus = async (req, res) => {
 // can params
 exports.deleteStatus = async (req, res) => {
 	try {
-		const statusId = req.params.id;
-		const userId = req.body.userId;
+		const { statusId } = await req.params;
+		console.log("statusId = ", statusId);
 
 		const status = await Status.findById(statusId).populate("user");
 
@@ -32,15 +41,9 @@ exports.deleteStatus = async (req, res) => {
 			return res.status(404).json({ message: "Trạng thái không tồn tại" });
 		}
 
-		if (status.user._id.toString() !== userId) {
-			return res
-				.status(401)
-				.json({ message: "Bạn không có quyền xóa bài viết này" });
-		}
+		await Status.findByIdAndDelete(statusId);
 
-		await status.remove();
-
-		res.json({ message: "Đã xóa trạng thái thành công" });
+		res.status(200).json(status);
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: "Lỗi server khi xóa trạng thái" });
@@ -81,13 +84,17 @@ exports.likeStatus = async (req, res) => {
 			return res.status(404).json({ msg: "Status không tồn tại" });
 		}
 
-		const { username } = req.body;
+		const { userId } = req.body;
 
-		if (status.likes.includes(username)) {
-			return res.status(400).json({ msg: "Bạn đã thích trạng thái này rồi" });
+		const index = status.likes.indexOf(userId);
+
+		if (index !== -1) {
+			// Nếu người dùng đã like thì xóa người dùng khỏi mảng likes
+			status.likes.splice(index, 1);
+		} else {
+			// Ngược lại, thêm người dùng vào mảng likes
+			status.likes.push(userId);
 		}
-
-		status.likes.push(username);
 
 		await status.save();
 
