@@ -1,4 +1,5 @@
 const Story = require("../models/storysModel");
+const Users = require("../models/usersModel");
 
 exports.getAllStory = async (req, res) => {
 	try {
@@ -12,8 +13,14 @@ exports.getAllStory = async (req, res) => {
 exports.createStory = async (req, res) => {
 	try {
 		const newStory = new Story(req.body);
-		const result = await newStory.save();
-		res.status(201).json(result);
+		const savedStory = await newStory.save();
+		const userId = req.body.user.toString();
+		const updatedUser = await Users.findByIdAndUpdate(
+			userId,
+			{ $push: { stories: savedStory._id } },
+			{ new: true }
+		);
+		res.status(201).json(savedStory);
 	} catch (err) {
 		console.log(err);
 		res.status(404).json(err);

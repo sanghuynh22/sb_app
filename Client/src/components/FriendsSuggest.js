@@ -1,28 +1,99 @@
-import React from "react";
-
+import React, { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllUsers } from "../actions/user/fetchAllUsers";
+import avatar from "../assets/images/avatar-mac-dinh.jpeg";
+import { addFriend } from "../actions/user/addFriend";
+import { deleteRequestFriend } from "../actions/user/deleteRequestAdd";
 export const FriendsSuggest = () => {
+	const dispatch = useDispatch();
+	const { users } = useSelector((state) => state.user.fetchAllUsers);
+	const { currentUser } = useSelector((state) => state.user.auth);
+	useEffect(() => {
+		dispatch(fetchAllUsers());
+	}, []);
+	const mutualFriendSuggest = useMemo(() => {
+		if (!currentUser || !users) return [];
+		let currentUserAccess = users.find((user) => user._id === currentUser._id);
+		const currentUserFriendIds = [
+			...currentUserAccess.friends.map((friend) => friend._id),
+			...currentUserAccess.friendRequest.map((request) => request._id),
+		];
+
+		const newUsers = users?.filter(
+			(user) =>
+				!currentUserFriendIds.includes(user._id) && user._id !== currentUser._id
+		);
+
+		const usersWithMutualFriends = newUsers.map((user) => {
+			const mutualFriends = user.friends?.filter((friend) =>
+				currentUserAccess?.friends?.some(
+					(currentUserFriend) => currentUserFriend._id === friend._id
+				)
+			);
+			return { ...user, mutualFriends };
+		});
+
+		return usersWithMutualFriends?.sort((a, b) => {
+			return b.mutualFriends?.length - a.mutualFriends?.length;
+		});
+	}, [currentUser, users]);
+	const handleClickAddFriend = (friendId) => {
+		dispatch(
+			addFriend({ userRequest: currentUser._id, userReceive: friendId })
+		).then((res) => {
+			dispatch(fetchAllUsers());
+		});
+	};
+	const handleClickDenyFriend = (friendId) => {
+		dispatch(
+			deleteRequestFriend({
+				userId: currentUser._id,
+				friendUserId: friendId,
+			})
+		).then((res) => {
+			dispatch(fetchAllUsers());
+			console.log("dont deny : ", res);
+		});
+	};
 	return (
 		<div className="friends_requests">
 			<div className="friends_request_info">
 				<p className="friends_request_title">Những người bạn có thể biết</p>
-				<p className="friends_request_all">Xem tất cả</p>
 			</div>
 			<div className="friend_request_container">
-				{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value, i) => (
-					<div className="friend_request" key={i}>
-						<img
-							src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/343131764_557073639880289_3947061849483831522_n.jpg?stp=dst-jpg_p320x320&_nc_cat=111&ccb=1-7&_nc_sid=7206a8&_nc_ohc=EqfNhpOgd3wAX9IN2Bx&_nc_ht=scontent.fsgn2-6.fna&oh=00_AfBBwduAH6D3Das921am4aHKDgSdraLY777m0_u4EA1VlA&oe=645DA413"
-							className="friend_request_img"
-						/>
-						<p className="friend_request_p">Hoàng Phúc</p>
-
-						<p className="friend_request_mutual_amount">1 bạn chung</p>
-
-						<div className="friend_request_accept">
-							<p className="friend_request_accept_p">Thêm bạn bè</p>
+				{mutualFriendSuggest.map((user, i) => (
+					<div className="friend_request" key={user._id}>
+						<div className="friend_request_info_container">
+							<img src={user.avatar || avatar} className="friend_request_img" />
+							<p className="friend_request_p">{user.username}</p>
+							{user?.mutualFriends?.length > 0 && (
+								<p className="friend_request_mutual_amount">
+									{user.mutualFriends.length} bạn chung
+								</p>
+							)}
 						</div>
-						<div className="friend_request_deny">
-							<p className="friend_request_deny_p">Xóa</p>
+
+						<div className="friend_request_buttons">
+							{user.friendReceiveRequest.includes(currentUser._id) ? (
+								<div
+									style={{ backgroundColor: "#3a3b3c" }}
+									className="friend_request_accept"
+									onClick={() => handleClickDenyFriend(user._id)}
+								>
+									<p className="friend_request_accept_p">Đã gửi lời mởi</p>
+								</div>
+							) : (
+								<div
+									className="friend_request_accept"
+									onClick={() => handleClickAddFriend(user._id)}
+								>
+									<p className="friend_request_accept_p">Thêm bạn bè</p>
+								</div>
+							)}
+
+							<div className="friend_request_deny">
+								<p className="friend_request_deny_p">Xóa</p>
+							</div>
 						</div>
 					</div>
 				))}

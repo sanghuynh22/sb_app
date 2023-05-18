@@ -21,15 +21,17 @@ export const fetchAllUsersFailure = (error) => ({
 export const fetchAllUsers = () => {
 	return (dispatch) => {
 		dispatch(fetchAllUsersRequest());
-		axios
+		return axios
 			.get("http://localhost:3000/api/users/")
 			.then((response) => {
 				const users = response.data;
 				dispatch(fetchAllUsersSuccess(users));
+				return Promise.resolve(users);
 			})
 			.catch((error) => {
 				const errorMsg = error.message;
 				dispatch(fetchAllUsersFailure(errorMsg));
+				return Promise.reject(errorMsg);
 			});
 	};
 };

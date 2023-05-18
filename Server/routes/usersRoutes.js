@@ -8,6 +8,7 @@ router.get("/:id", usersController.getUser);
 router.post("/", usersController.registerUser);
 router.post("/login", usersController.loginUser);
 router.post("/add-friend", usersController.addFriend);
+router.post("/delete-friend", usersController.deleteFriend);
 router.post("/accept-friend-request", usersController.acceptFriendRequest);
 router.post("/deny-friend-request", usersController.denyFriendRequest);
 router.put("/hide-status", usersController.hideStatus);

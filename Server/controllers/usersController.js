@@ -1,12 +1,34 @@
 const Users = require("../models/usersModel");
-
+const Story = require("../models/storysModel");
+const mongoose = require("mongoose");
 exports.getAllUsers = async (req, res) => {
 	try {
-		const user = await Users.find().populate("friends");
-		res.status(201).json(user);
+		const users = await Users.find().populate(["stories", "friends"]);
+		const now = new Date();
+
+		for (let i = 0; i < users.length; i++) {
+			const user = users[i];
+			const stories = user.stories || [];
+
+			for (let j = 0; j < stories.length; j++) {
+				const story = stories[j];
+				const createdAt = new Date(story.createdAt);
+				const diffInMs = now - createdAt;
+				const diffInHours = diffInMs / (1000 * 60 * 60);
+
+				if (diffInHours >= 24) {
+					user.stories.pull(story._id);
+					await user.save();
+					await Story.deleteOne({ _id: story._id });
+				}
+			}
+		}
+
+		const updatedUsers = await Users.find().populate(["stories", "friends"]);
+		res.status(200).json(updatedUsers);
 	} catch (err) {
 		console.log(err);
-		res.status(404).json(err);
+		res.status(500).json({ message: "Internal server error" });
 	}
 };
 exports.getUser = async (req, res) => {
@@ -52,58 +74,84 @@ exports.loginUser = async (req, res) => {
 exports.addFriend = async (req, res) => {
 	const { userRequest, userReceive } = req.body;
 	try {
-		const requestUser = await Users.findOneAndUpdate(
-			{ username: userRequest },
-			{
-				$push: { friendRequest: userReceive },
-			}
-		);
-		const receiveUser = await Users.findOneAndUpdate(
-			{ username: userReceive },
-			{
-				$push: { friendReceiveRequest: userRequest },
-			}
-		);
-		if (!requestUser || !userReceive) {
+		const requestUser = await Users.findByIdAndUpdate(userRequest, {
+			$push: { friendRequest: userReceive },
+		});
+		const receiveUser = await Users.findByIdAndUpdate(userReceive, {
+			$push: { friendReceiveRequest: userRequest },
+		});
+		if (!requestUser || !receiveUser) {
 			console.log("requestUser, req.body", requestUser, req.body);
 			return res.status(404).json("Users not found");
 		}
-		res.status(200).json("requesting friend success!");
+		res.status(200).json("Request sent successfully!");
 	} catch (error) {
+		res.status(500).json(error.message);
+	}
+};
+exports.deleteFriend = async (req, res) => {
+	const { userId, friendId } = req.body;
+	try {
+		const user = await Users.findById(userId);
+		const friend = await Users.findById(friendId);
+
+		if (!user || !friend) {
+			return res.status(404).json("Không tìm thấy người dùng");
+		}
+
+		const updatedFriends = user.friends.filter(
+			(friendId) => friendId.toString() !== friend._id.toString()
+		);
+
+		const updatedUser = await Users.findByIdAndUpdate(
+			userId,
+			{ $set: { friends: updatedFriends } },
+			{ new: true }
+		);
+
+		const updatedFriend = await Users.findByIdAndUpdate(
+			friendId,
+			{ $pull: { friends: userId } },
+			{ new: true }
+		);
+
+		res.status(200).json({ updatedUser, updatedFriend });
+	} catch (error) {
+		console.log(error);
 		res.status(500).json(error.message);
 	}
 };
 
 exports.acceptFriendRequest = async (req, res) => {
-	const { username, friendUsername } = req.body;
+	const { userId, friendId } = req.body;
 	try {
-		const friendUser = await Users.findOne({ username: friendUsername });
-		const userAccept = await Users.findOne({ username: username });
+		const friendUser = await Users.findById(friendId);
+		const userAccept = await Users.findById(userId);
 		if (!friendUser) return res.status(404).json("Không tìm thấy người dùng");
 		if (!userAccept) return res.status(404).json("Không tìm thấy người dùng");
 
 		const updatedRequests = friendUser.friendRequest.filter(
-			(request) => request !== username
+			(request) => request.toString() !== userId
 		);
 
-		const updatedFriends = [...friendUser.friends, userAccept._id];
+		const updatedFriends = [...friendUser.friends, userId];
 
-		const updatedFriend = await Users.findOneAndUpdate(
-			{ username: friendUsername },
+		const updatedFriend = await Users.findByIdAndUpdate(
+			friendId,
 			{ $set: { friendRequest: updatedRequests, friends: updatedFriends } },
 			{ new: true }
 		);
 
 		const updatedReceive = userAccept.friendReceiveRequest.filter(
-			(request) => request !== friendUsername
+			(request) => request.toString() !== friendId
 		);
 
-		const updateduserAccept = await Users.findOneAndUpdate(
-			{ username },
+		const updateduserAccept = await Users.findByIdAndUpdate(
+			userId,
 			{
 				$set: {
 					friendReceiveRequest: updatedReceive,
-					friends: [...userAccept.friends, friendUser._id],
+					friends: [...userAccept.friends, friendId],
 				},
 			},
 			{ new: true }
@@ -116,33 +164,51 @@ exports.acceptFriendRequest = async (req, res) => {
 	}
 };
 exports.denyFriendRequest = async (req, res) => {
-	const { username, friendUsername } = req.body;
+	const { userId, friendUserId } = req.body;
 	try {
-		const friendUser = await Users.findOne({ username: friendUsername });
-		if (!friendUser) return res.status(404).json("Không tìm thấy người dùng");
+		const friendUser = await Users.findById(friendUserId);
+
+		if (!friendUser) {
+			return res.status(404).json("Không tìm thấy người dùng");
+		}
 
 		const updatedRequests = friendUser.friendRequest.filter(
-			(request) => request !== username
+			(requestUserId) => requestUserId !== userId
+		);
+		const updatedFriendReceiveRequest = friendUser.friendReceiveRequest.filter(
+			(receiveUserId) => receiveUserId.toString() !== userId.toString()
 		);
 
-		const updatedFriends = [...friendUser.friends, username];
-
-		const updatedFriend = await Users.findOneAndUpdate(
-			{ username: friendUsername },
-			{ $set: { friendRequest: updatedRequests } },
+		const updatedFriend = await Users.findByIdAndUpdate(
+			friendUserId,
+			{
+				$set: {
+					friendRequest: updatedRequests,
+					friendReceiveRequest: updatedFriendReceiveRequest,
+				},
+			},
 			{ new: true }
 		);
 
-		const currentUser = await Users.findOne({ username });
-		if (!currentUser) return res.status(404).json("Không tìm thấy người dùng");
+		const currentUser = await Users.findById(userId);
+		if (!currentUser) {
+			return res.status(404).json("Không tìm thấy người dùng");
+		}
 
-		const updatedReceive = friendUser.friendReceiveRequest.filter(
-			(request) => request !== friendUsername
+		const updatedCurrentUserReceive = currentUser.friendReceiveRequest.filter(
+			(requestId) => requestId !== friendUserId
 		);
-
-		const updatedCurrentUser = await Users.findOneAndUpdate(
-			{ username },
-			{ $set: { friendReceiveRequest: updatedReceive } },
+		const updatedCurrentUserRequest = currentUser.friendRequest.filter(
+			(receiveId) => receiveId.toString() !== friendUserId.toString()
+		);
+		const updatedCurrentUser = await Users.findByIdAndUpdate(
+			userId,
+			{
+				$set: {
+					friendReceiveRequest: updatedCurrentUserReceive,
+					friendRequest: updatedCurrentUserRequest,
+				},
+			},
 			{ new: true }
 		);
 
@@ -154,16 +220,21 @@ exports.denyFriendRequest = async (req, res) => {
 };
 exports.updateUser = async (req, res) => {
 	try {
-		const { username } = req.body;
+		const { userId, avatar } = req.body;
 
-		let user = await Users.findOne({ username });
+		const user = await Users.findByIdAndUpdate(
+			userId,
+			{
+				$set: {
+					avatar,
+				},
+			},
+			{ new: true }
+		);
 
 		if (!user) {
 			return res.status(404).json({ error: "Người dùng không tồn tại" });
 		}
-
-		user.set(req.body);
-		user = await user.save();
 
 		return res.json(user);
 	} catch (error) {

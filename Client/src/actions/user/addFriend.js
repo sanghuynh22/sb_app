@@ -18,18 +18,20 @@ export const addFriendFailure = (error) => ({
 	payload: error,
 });
 
-export const addFriend = (friendData) => {
+export const addFriend = (data) => {
 	return (dispatch) => {
 		dispatch(addFriendRequest());
-		axios
-			.post("/api/friends", friendData)
+		return axios
+			.post("http://localhost:3000/api/users/add-friend", data)
 			.then((response) => {
 				const friend = response.data;
 				dispatch(addFriendSuccess(friend));
+				return Promise.resolve(friend);
 			})
 			.catch((error) => {
 				const errorMsg = error.message;
 				dispatch(addFriendFailure(errorMsg));
+				return Promise.reject(errorMsg);
 			});
 	};
 };

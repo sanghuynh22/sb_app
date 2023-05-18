@@ -19,15 +19,27 @@ const UserSchema = mongoose.Schema(
 				ref: "Users",
 			},
 		],
-		friendRequest: {
-			type: [String],
-		},
-		friendReceiveRequest: {
-			type: [String],
-		},
+		friendRequest: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Users",
+			},
+		],
+		friendReceiveRequest: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Users",
+			},
+		],
 		avatar: {
 			type: String,
 		},
+		stories: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Story",
+			},
+		],
 		statusHide: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
