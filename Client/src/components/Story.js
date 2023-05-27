@@ -15,6 +15,7 @@ import StoryCreate from "./StoryCreate";
 import { useParams } from "react-router-dom";
 import { fetchAllUsers } from "../actions/user/fetchAllUsers";
 import { formatDate } from "../time/formatTime";
+import avatar from "../assets/images/avatar-mac-dinh.jpeg";
 const Story = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -28,9 +29,7 @@ const Story = () => {
 	const { users } = useSelector((state) => state.user.fetchAllUsers);
 
 	useEffect(() => {
-		dispatch(fetchAllUsers()).then((users) =>
-			console.log("users from story ", users)
-		);
+		dispatch(fetchAllUsers());
 	}, [userId]);
 	useEffect(() => {
 		startProgress();

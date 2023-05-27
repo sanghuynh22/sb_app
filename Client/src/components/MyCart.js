@@ -7,9 +7,7 @@ const MyCart = () => {
 	const [cart, setCart] = useState(true);
 	const { currentUser } = useSelector((state) => state.user.auth);
 	useEffect(() => {
-		dispatch(getBought(currentUser._id)).then(() => {
-			console.log("items cart : ", boughtItems);
-		});
+		dispatch(getBought(currentUser._id)).then(() => {});
 	}, []);
 	const handleClickCart = () => {
 		setCart(true);

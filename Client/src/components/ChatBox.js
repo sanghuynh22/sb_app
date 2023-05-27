@@ -50,7 +50,6 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 
 		socket.on("messageHistory", (data) => {
 			setMessages([...data, ...messages]);
-			console.log("data history : ", data);
 		});
 	}, [friend]);
 
@@ -84,10 +83,6 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 
 	const handleSendMessage = async () => {
 		if (text.trim() !== "") {
-			console.log("text: ", text);
-			console.log("friendId: ", friend._id);
-			console.log("CURRENT: ", currentUser._id);
-
 			await socket.emit("sendMessage", {
 				userId: currentUser._id,
 				recipientId: friend._id,
@@ -96,7 +91,6 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 			socket.on("messageReceive", (data) => {
 				setText("");
 				setMessages([data, ...messages]);
-				console.log("data history : ", data);
 			});
 			socket.on("newMessage", (newMessage) => {
 				setMessages([newMessage, ...messages]);
@@ -116,12 +110,7 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 	};
 	return (
 		<div className="chatbox">
-			<div
-				className="chatbox_top"
-				onClick={() => {
-					console.log("messages : ", messages);
-				}}
-			>
+			<div className="chatbox_top">
 				<div className="chatbox_top_info">
 					<img src={friend.avatar || avatar} className="chatbox_top_info_img" />
 					<div className="chatbox_top_info_right">

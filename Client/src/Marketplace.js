@@ -54,7 +54,6 @@ const Marketplace = () => {
 		setActive("phone");
 		setTag("phone");
 		setText("Điện thoại");
-		console.log("tag: ", tag);
 	};
 	const handleClickLaptop = () => {
 		setCart(false);
@@ -62,7 +61,6 @@ const Marketplace = () => {
 		setActive("laptop");
 		setTag("laptop");
 		setText("Laptop");
-		console.log("tag: ", tag);
 	};
 	const handleClickFamily = () => {
 		setCart(false);
@@ -70,7 +68,6 @@ const Marketplace = () => {
 		setActive("family");
 		setTag("family");
 		setText("Gia đình");
-		console.log("tag: ", tag);
 	};
 	const handleClickElectric = () => {
 		setCart(false);
@@ -78,7 +75,6 @@ const Marketplace = () => {
 		setActive("electric");
 		setTag("electric");
 		setText("Điện tử");
-		console.log("tag: ", tag);
 	};
 	const handleClickMusic = () => {
 		setCart(false);
@@ -86,7 +82,6 @@ const Marketplace = () => {
 		setActive("music");
 		setTag("music");
 		setText("Nhạc cụ");
-		console.log("tag: ", tag);
 	};
 	return (
 		<div className="container">

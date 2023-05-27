@@ -52,7 +52,6 @@ export const FriendsSuggest = () => {
 			})
 		).then((res) => {
 			dispatch(fetchAllUsers());
-			console.log("dont deny : ", res);
 		});
 	};
 	return (

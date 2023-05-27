@@ -8,8 +8,6 @@ const MarketByTag = ({ tag, text, setTag }) => {
 	const { items } = useSelector((state) => state.market.getAllItem);
 	useEffect(() => {
 		dispatch(getAllItem());
-		console.log("tag ", tag);
-		console.log("items : ", items);
 	}, [tag, setTag]);
 	return (
 		<>

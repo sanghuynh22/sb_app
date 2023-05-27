@@ -17,15 +17,12 @@ const WatchCreate = ({ setIsCreate }) => {
 	};
 	const handleUploadFile = (e) => {
 		const fileBuffer = e.target.files[0];
-		console.log("File : ", fileBuffer);
 		setFile(fileBuffer);
 
-		console.log("File before Reader : ", fileBuffer);
 		const reader = new FileReader();
 		reader.readAsDataURL(fileBuffer);
 		reader.onload = () => {
 			setFileReview(reader.result);
-			console.log("File after Reader : ", reader.result);
 		};
 	};
 	const handleClickCreate = () => {
@@ -34,10 +31,6 @@ const WatchCreate = ({ setIsCreate }) => {
 		} else if (!file) {
 			alert("Tải lên file video trước khi tạo");
 		} else {
-			console.log("title UI : ", title);
-			console.log("user UI : ", currentUser._id);
-			console.log("file UI : ", file);
-
 			dispatch(
 				createWatch({ title: title, user: currentUser._id, file: file })
 			).then((res) => alert(`Đã tạo thành công Watch với video ${file.name}`));

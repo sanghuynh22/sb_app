@@ -118,20 +118,15 @@ const Home = () => {
 		if (file) {
 			reader.readAsDataURL(file);
 		}
-		console.log("image : ", image);
 	};
 	const handleEnter = async (e) => {
 		let user = await currentUser._id;
 		if (text) {
 			if (e.key === "Enter") {
-				console.log("userId : ", user);
-				console.log("userCurrent : ", currentUser);
-
 				dispatch(createStatus({ text, image, user })).then((status) => {
 					dispatch(getAllStatus());
 					setText("");
 					setImage("");
-					console.log(status);
 				});
 			}
 		}

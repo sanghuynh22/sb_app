@@ -42,14 +42,12 @@ function Reels() {
 		const newIndex = Math.min(activeIndex + 5, shorts.length - 1);
 		setActiveIndex(newIndex);
 		scrollToIndex(newIndex);
-		console.log("index", newIndex);
 	};
 
 	const handlePrevClick = () => {
 		const newIndex = Math.max(activeIndex - 5, 0);
 		setActiveIndex(newIndex);
 		scrollToIndex(newIndex);
-		console.log("index", newIndex);
 	};
 
 	const scrollToIndex = (index) => {

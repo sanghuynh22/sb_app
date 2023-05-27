@@ -14,20 +14,18 @@ function ShortsSlider() {
 	const { currentUser } = useSelector((state) => state.user.auth);
 	const { users } = useSelector((state) => state.user.fetchAllUsers);
 	useEffect(() => {
-		dispatch(fetchAllUsers()).then((users) => console.log("All users ", users));
+		dispatch(fetchAllUsers()).then((users) => {});
 	}, []);
 	const handleNextClick = () => {
 		const newIndex = Math.min(activeIndex + 5, shorts.length - 1);
 		setActiveIndex(newIndex);
 		scrollToIndex(newIndex);
-		console.log("index", newIndex);
 	};
 
 	const handlePrevClick = () => {
 		const newIndex = Math.max(activeIndex - 5, 0);
 		setActiveIndex(newIndex);
 		scrollToIndex(newIndex);
-		console.log("index", newIndex);
 	};
 
 	const scrollToIndex = (index) => {

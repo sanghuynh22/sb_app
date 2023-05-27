@@ -39,7 +39,6 @@ const MarketCreate = ({ setIsCreate }) => {
 			img.src = reader.result;
 
 			img.onload = () => {
-				console.log("file : ", file);
 				const canvas = document.createElement("canvas");
 				const ctx = canvas.getContext("2d");
 
@@ -70,8 +69,6 @@ const MarketCreate = ({ setIsCreate }) => {
 				const imageType = "image/jpeg";
 				const dataURL = canvas.toDataURL(imageType);
 				setImage(dataURL);
-
-				console.log("image : ", dataURL);
 			};
 		};
 

@@ -45,14 +45,12 @@ const Status = ({ userProfile }) => {
 	//comments
 	const handleEnter = async (e, statusId) => {
 		let user = await currentUser._id;
-		console.log("status?._id", status?._id);
 
 		if (content) {
 			if (e.key === "Enter") {
 				dispatch(createComment({ content, user, statusId })).then((comment) => {
 					dispatch(getAllStatus());
 					setContent("");
-					console.log("comment", comment);
 				});
 			}
 		}
@@ -63,33 +61,22 @@ const Status = ({ userProfile }) => {
 			dispatch(createComment({ content, user, statusId })).then((comment) => {
 				dispatch(getAllStatus());
 				setContent("");
-				console.log("comment", comment);
 			});
 		}
 	};
 	const handleClickLike = (statusId, userId) => {
 		dispatch(likeStatus(statusId, userId)).then((status) => {
 			dispatch(getAllStatus());
-			console.log("status after likes ", status);
 		});
 	};
 	const handleClickDeleteStatus = async (statusId, userIdOfStatus, userId) => {
-		console.log("currentId = ", currentUser._id);
-		console.log("userId of Status = ", userId);
-
 		if (userIdOfStatus == currentUser._id) {
 			dispatch(deleteStatus(statusId)).then((status) => {
 				dispatch(getAllStatus());
-
-				console.log("deleteStatus ! = ", status);
 			});
 		} else {
-			console.log("currentUserId trong hide = ", userId);
-
 			dispatch(hideStatus({ statusId, userId })).then((userHide) => {
 				dispatch(getAllStatus());
-
-				console.log("hideStauts ! = ", userHide);
 			});
 		}
 	};

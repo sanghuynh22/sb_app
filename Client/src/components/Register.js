@@ -35,7 +35,6 @@ const Register = () => {
 				})
 				.catch((errMess) => {
 					setMess(errMess);
-					console.log("error", errMess);
 				});
 		} else {
 			setMess("Hãy nhập đầy đủ thông tin!");

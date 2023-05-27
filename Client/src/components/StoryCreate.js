@@ -69,7 +69,6 @@ const StoryCreate = () => {
 			};
 
 			reader.readAsDataURL(file);
-			console.log("videoString = ", videoString);
 		} else {
 			setVideoFile(null);
 			setVideoString("");
@@ -116,7 +115,6 @@ const StoryCreate = () => {
 			if (file) {
 				reader.readAsDataURL(file);
 			}
-			console.log("image : ", image);
 		}
 	};
 
@@ -133,7 +131,6 @@ const StoryCreate = () => {
 				).then((story) => {
 					alert(`story với nội dung: ${text} đã được tạo`);
 					setText("");
-					console.log("story ", story);
 				});
 			}
 		} else {
@@ -146,7 +143,6 @@ const StoryCreate = () => {
 				// 		type: "video",
 				// 	})
 				// ).then((story) => {
-				// 	console.log("story by image: ", story);
 				// });
 			} else if (image) {
 				dispatch(
@@ -157,7 +153,6 @@ const StoryCreate = () => {
 					})
 				).then((story) => {
 					alert(`story đã được tạo`);
-					console.log("story by image: ", story);
 				});
 			}
 		}
@@ -165,7 +160,6 @@ const StoryCreate = () => {
 	const handleLoadedMetadata = () => {
 		// Lấy thời lượng của video
 		const duration = videoRef.current.duration;
-		console.log("videoString = ", videoString);
 
 		// Kiểm tra điều kiện
 		if (duration > 60) {

@@ -59,7 +59,6 @@ const Profile = () => {
 		fetchAllUsers,
 	]);
 	const userProfile = useMemo(() => {
-		console.log(users?.find((user) => user._id === userId));
 		return users?.find((user) => user._id === userId);
 	}, [
 		currentUser,

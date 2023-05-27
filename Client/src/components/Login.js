@@ -38,7 +38,6 @@ const Login = () => {
 			dispatch(loginUser({ username, password })).then((user) => {
 				dispatch(authLogin(user));
 				socket.emit("login", user._id);
-				console.log(user);
 			});
 		}
 	};
