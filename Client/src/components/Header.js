@@ -20,8 +20,10 @@ import { authLogout } from "../actions/user/auth";
 import avatar from "../assets/images/avatar-mac-dinh.jpeg";
 import { fetchAllUsers } from "../actions/user/fetchAllUsers";
 import { updateUser } from "../actions/user/updateUser";
+import { getSocket } from "../socket";
 
 const Header = () => {
+	const socket = getSocket();
 	const location = useLocation();
 	const { path } = useParams();
 	const dispatch = useDispatch();
@@ -33,13 +35,13 @@ const Header = () => {
 
 	useEffect(() => {
 		dispatch(fetchAllUsers());
-		console.log("path", path);
 	}, [dispatch, updateUser]);
 	useEffect(() => {
 		setCurrentPath(path);
 	}, [path]);
 	const handleClickLogOut = () => {
 		dispatch(authLogout());
+		socket.emit("user-disconnect");
 		navigate("/");
 	};
 	const handleFind = async (e) => {
@@ -137,9 +139,9 @@ const Header = () => {
 						className="header_right_option_avatar"
 					/>
 					<div class="header_right_avatar_sudo">
-						<a href="#" class="profile-link">
+						<Link to={`/profile/${currentUser._id}`} class="profile-link">
 							Profile
-						</a>
+						</Link>
 						<a href="#" class="logout-link" onClick={() => handleClickLogOut()}>
 							Đăng xuất
 						</a>

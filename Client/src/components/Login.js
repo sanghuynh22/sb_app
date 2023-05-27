@@ -7,9 +7,12 @@ import avatar from "../assets/images/avatar-mac-dinh.jpeg";
 import { fetchUser } from "../actions/user/fetchUser";
 import { Link } from "react-router-dom";
 import { loginUser } from "../actions/user/loginUser";
-
+import io from "socket.io-client";
+import { getSocket } from "../socket";
 const Login = () => {
+	const socket = getSocket();
 	const dispatch = useDispatch();
+	const [id, setId] = useState("");
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [isSee, setIsSee] = useState(false);
@@ -17,12 +20,14 @@ const Login = () => {
 		(state) => state.user.fetchAllUsers
 	);
 	const { user } = useSelector((state) => state.user.loginUser);
-
+	const { currentUser } = useSelector((state) => state.user.auth);
 	useEffect(() => {
 		dispatch(fetchAllUsers());
-	}, [dispatch]);
+	}, []);
 	const handleClickCard = async (user) => {
-		dispatch(authLogin(user));
+		dispatch(authLogin(user)).then((user) => {
+			socket.emit("login", user._id);
+		});
 	};
 	const handleClickPassword = () => {
 		setIsSee(!isSee);
@@ -32,6 +37,7 @@ const Login = () => {
 		if (username.length >= 6 && password.length >= 6) {
 			dispatch(loginUser({ username, password })).then((user) => {
 				dispatch(authLogin(user));
+				socket.emit("login", user._id);
 				console.log(user);
 			});
 		}

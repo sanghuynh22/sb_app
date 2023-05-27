@@ -46,6 +46,17 @@ const UserSchema = mongoose.Schema(
 				ref: "Status",
 			},
 		],
+		socketId: {
+			type: String,
+		},
+		online: {
+			type: Boolean,
+			default: false,
+		},
+		timeOff: {
+			type: Date,
+			default: Date.now,
+		},
 	},
 	{ collection: "Users" }
 );

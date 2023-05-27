@@ -12,9 +12,15 @@ const WatchSchema = new Schema(
 			ref: "Users",
 			required: true,
 		},
-		content: {
+		file: {
 			type: String,
 			required: true,
+		},
+		view: {
+			type: Number,
+		},
+		likes: {
+			type: Number,
 		},
 		createdAt: {
 			type: Date,

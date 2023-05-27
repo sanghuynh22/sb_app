@@ -33,10 +33,15 @@ import Status from "./components/Status";
 import { createStatus } from "./actions/status/createStatus";
 import { getAllStatus } from "./actions/status/getAllStatus";
 import { fetchAllUsers } from "./actions/user/fetchAllUsers";
+import ChatBox from "./components/ChatBox";
+import { getSocket } from "./socket";
 
 const Home = () => {
+	const socket = getSocket();
 	const fileRef = useRef();
 	const dispatch = useDispatch();
+	const [chat, setChat] = useState(false);
+	const [selectedFriend, setSelectedFriend] = useState(null);
 	const [isReels, setIsReels] = useState(false);
 	const [text, setText] = useState("");
 	const [image, setImage] = useState("");
@@ -44,8 +49,20 @@ const Home = () => {
 	const { users } = useSelector((state) => state.user.fetchAllUsers);
 	useEffect(() => {
 		dispatch(fetchAllUsers());
-	}, []);
 
+		// socket.on("loginSuccess", () => {
+		// 	dispatch(fetchAllUsers());
+		// });
+		// socket.on("disconnectSucces", () => {
+		// 	dispatch(fetchAllUsers());
+		// });
+	}, [socket]);
+	socket.on("loginSuccess", () => {
+		dispatch(fetchAllUsers());
+	});
+	socket.on("disconnectSuccess", () => {
+		dispatch(fetchAllUsers());
+	});
 	const HandleClickStory = () => {
 		setIsReels(false);
 	};
@@ -119,6 +136,10 @@ const Home = () => {
 			}
 		}
 	};
+	const handleClickFriend = (friend) => {
+		setSelectedFriend(friend);
+		setChat(true);
+	};
 	return (
 		<div className="container">
 			<Header />
@@ -131,7 +152,7 @@ const Home = () => {
 					>
 						<img
 							src={
-								users.find((user) => user._id === currentUser._id).avatar ||
+								users?.find((user) => user._id === currentUser._id).avatar ||
 								avatar
 							}
 							className="home_left_option_avatar"
@@ -238,21 +259,34 @@ const Home = () => {
 					<div className="home_right_content">
 						<p className="home_right_title">Người liên hệ</p>
 						{users
-							.filter((user) => user._id !== currentUser._id)
+							?.filter((user) => user._id !== currentUser._id)
 							.map((user, i) => (
-								<Link
-									to={`/profile/${user._id}`}
-									className="home_right_friend online"
-									key={i}
-								>
-									<div className="home_right_friend_avatar">
-										<img
-											src={user?.avatar ? user.avatar : avatar}
-											className="home_right_friend_img"
-										/>
+								<>
+									<div
+										className={
+											user.online
+												? "home_right_friend online"
+												: "home_right_friend"
+										}
+										key={user._id}
+										onClick={() => handleClickFriend(user)}
+									>
+										<div className="home_right_friend_avatar">
+											<img
+												src={user?.avatar ? user.avatar : avatar}
+												className="home_right_friend_img"
+											/>
+										</div>
+										<p>{user.username}</p>
 									</div>
-									<p>{user.username}</p>
-								</Link>
+									{chat && (
+										<ChatBox
+											setChat={setChat}
+											friend={selectedFriend}
+											setSelectedFriend={setSelectedFriend}
+										/>
+									)}
+								</>
 							))}
 					</div>
 				</div>

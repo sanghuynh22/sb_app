@@ -9,8 +9,24 @@ import { useSelector } from "react-redux";
 import Register from "./components/Register";
 import Story from "./components/Story";
 import Profile from "./components/Profile";
+import MarketItem from "./components/MarketItem";
+import { useEffect } from "react";
+import { getSocket } from "./socket";
 function App() {
+	const socket = getSocket();
 	const { currentUser } = useSelector((state) => state.user.auth);
+	useEffect(() => {
+		window.addEventListener("beforeunload", () => socket.emit("disconnect"));
+		window.addEventListener("unload", () => socket.emit("disconnect"));
+
+		return () => {
+			window.removeEventListener("beforeunload", () =>
+				socket.emit("disconnect")
+			);
+			window.removeEventListener("unload", () => socket.emit("disconnect"));
+		};
+	}, []);
+
 	return (
 		<Routes>
 			{currentUser ? (
@@ -28,6 +44,7 @@ function App() {
 			<Route path="friends" element={<Friends />} />
 			<Route path="watch" element={<Watch />} />
 			<Route path="marketplace" element={<Marketplace />} />
+			<Route path="marketplace/:id" element={<MarketItem />} />
 			<Route path="*" element={<Error />} />
 		</Routes>
 	);

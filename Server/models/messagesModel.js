@@ -3,12 +3,14 @@ const Schema = mongoose.Schema;
 
 const MessagesSchema = new Schema(
 	{
-		sender: {
-			type: String,
+		from: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Users",
 			required: true,
 		},
-		receiver: {
-			type: String,
+		to: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Users",
 			required: true,
 		},
 		content: {

@@ -17,6 +17,12 @@ import likeStatusReducer from "./status/likeStatus";
 import createCommentReducer from "./status/createComment";
 import createStoryReducer from "./story/createStory";
 import getAllStoryReducer from "./story/getAllStory";
+import createWatchReducer from "./watch/createWatch";
+import getAllWatchReducer from "./watch/getAllWatch";
+import createItemReducer from "./market/createItem";
+import getAllItemReducer from "./market/getAllItem";
+import getBoughtReducer from "./market/getBought";
+import buyItemReducer from "./market/buyItem";
 
 const rootReducer = combineReducers({
 	user: combineReducers({
@@ -42,6 +48,16 @@ const rootReducer = combineReducers({
 	story: combineReducers({
 		createStory: createStoryReducer,
 		getAllStory: getAllStoryReducer,
+	}),
+	watch: combineReducers({
+		createWatch: createWatchReducer,
+		getAllWatch: getAllWatchReducer,
+	}),
+	market: combineReducers({
+		createMarket: createItemReducer,
+		getAllItem: getAllItemReducer,
+		buyItem: buyItemReducer,
+		getBought: getBoughtReducer,
 	}),
 });
 

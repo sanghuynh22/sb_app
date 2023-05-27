@@ -2,7 +2,7 @@ const Watch = require("../models/watchModel");
 
 exports.getAllWatch = async (req, res) => {
 	try {
-		const allWatch = await Watch.find();
+		const allWatch = await Watch.find().populate("user");
 		res.json(allWatch);
 	} catch (error) {
 		console.error(error.message);
@@ -10,16 +10,26 @@ exports.getAllWatch = async (req, res) => {
 	}
 };
 exports.createWatch = async (req, res) => {
+	const file = req.file.filename;
+	const title = req.body.title;
+	const user = req.body.user;
+	console.log("body : ", req.body);
+	console.log("file : ", file);
+	console.log("title : ", title);
+	console.log("user : ", user);
 	try {
-		const newWatch = new Watch(req.body);
-		const result = await newWatch.save();
-		res.status(201).json(result);
-	} catch (err) {
-		console.log(err);
-		res.status(404).json(err);
+		const newWatch = new Watch({
+			file: file,
+			title: title,
+			user: user,
+		});
+		await newWatch.save();
+		res.json({ message: "Upload successfully" });
+	} catch {
+		console.error(error.message);
+		res.status(500).json("Lỗi server");
 	}
 };
-
 exports.getWatchOfUser = async (req, res) => {
 	try {
 		const { userId } = req.params;
