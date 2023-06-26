@@ -26,7 +26,7 @@ export const createStatus = ({ text, image, user }) => {
 	return (dispatch) => {
 		dispatch(createStatusRequest());
 		return axios
-			.post("http://localhost:3000/api/status", data)
+			.post(`${process.env.REACT_APP_API_URL}/status`, data)
 			.then((response) => {
 				const status = response.data;
 				dispatch(createStatusSuccess(status));

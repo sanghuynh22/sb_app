@@ -22,7 +22,7 @@ export const likeStatus = (statusId, userId) => {
 	return (dispatch) => {
 		dispatch(likeStatusRequest());
 		return axios
-			.put(`http://localhost:3000/api/status/like-status/${statusId}`, {
+			.put(`${process.env.REACT_APP_API_URL}/status/like-status/${statusId}`, {
 				userId,
 			})
 			.then((response) => {

@@ -22,7 +22,7 @@ export const getAllStory = () => {
 	return (dispatch) => {
 		dispatch(getAllStoryRequest());
 		return axios
-			.get("http://localhost:3000/api/users")
+			.get(`${process.env.REACT_APP_API_URL}/users`)
 			.then((response) => {
 				const stories = response.data;
 				dispatch(getAllStorySuccess(stories));

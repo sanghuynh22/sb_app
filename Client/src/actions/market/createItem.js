@@ -22,7 +22,7 @@ export const createItem = (data) => {
 	return (dispatch) => {
 		dispatch(createItemRequest());
 		return axios
-			.post("http://localhost:3000/api/market", data)
+			.post(`${process.env.REACT_APP_API_URL}/market`, data)
 			.then((response) => {
 				const item = response.data;
 				dispatch(createItemSuccess(item));

@@ -22,7 +22,7 @@ export const deleteFriend = (data) => {
 	return (dispatch) => {
 		dispatch(deleteFriendRequest());
 		return axios
-			.post("http://localhost:3000/api/users/delete-friend", data)
+			.post(`${process.env.REACT_APP_API_URL}/users/delete-friend`, data)
 			.then((response) => {
 				const friend = response.data;
 				dispatch(deleteFriendSuccess(friend));

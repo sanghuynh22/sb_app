@@ -22,7 +22,7 @@ export const getAllItem = () => {
 	return (dispatch) => {
 		dispatch(getAllItemRequest());
 		return axios
-			.get("http://localhost:3000/api/market")
+			.get(`${process.env.REACT_APP_API_URL}/market`)
 			.then((response) => {
 				const stories = response.data;
 				dispatch(getAllItemSuccess(stories));

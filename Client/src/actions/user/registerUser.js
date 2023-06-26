@@ -22,7 +22,7 @@ export const registerUser = (username, password) => {
 	return (dispatch) => {
 		dispatch(registerUserRequest());
 		return axios
-			.post("http://localhost:3000/api/users/", {
+			.post(`${process.env.REACT_APP_API_URL}/users/`, {
 				username,
 				password,
 			})

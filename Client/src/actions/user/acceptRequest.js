@@ -22,7 +22,10 @@ export const acceptRequestFriend = (data) => {
 	return (dispatch) => {
 		dispatch(acceptRequestFriendRequest());
 		return axios
-			.post("http://localhost:3000/api/users/accept-friend-request", data)
+			.post(
+				`${process.env.REACT_APP_API_URL}/users/accept-friend-request`,
+				data
+			)
 			.then((response) => {
 				const friend = response.data;
 				dispatch(acceptRequestFriendSuccess(friend));

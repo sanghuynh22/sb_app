@@ -22,7 +22,7 @@ export const deleteRequestFriend = (data) => {
 	return (dispatch) => {
 		dispatch(deleteRequestFriendRequest());
 		return axios
-			.post("http://localhost:3000/api/users/deny-friend-request", data)
+			.post(`${process.env.REACT_APP_API_URL}/users/deny-friend-request`, data)
 			.then((response) => {
 				const friend = response.data;
 				dispatch(deleteRequestFriendSuccess(friend));

@@ -22,7 +22,7 @@ export const updateUser = (data) => {
 	return (dispatch) => {
 		dispatch(updateUserRequest());
 		return axios
-			.put("http://localhost:3000/api/users/", data)
+			.put(`${process.env.REACT_APP_API_URL}/users/`, data)
 			.then((response) => {
 				const user = response.data;
 				dispatch(updateUserSuccess(user));

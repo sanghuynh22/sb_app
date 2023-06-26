@@ -22,7 +22,7 @@ export const deleteStatus = (statusId) => {
 	return (dispatch) => {
 		dispatch(deleteStatusRequest());
 		return axios
-			.delete(`http://localhost:3000/api/status/${statusId}`)
+			.delete(`${process.env.REACT_APP_API_URL}/status/${statusId}`)
 			.then((response) => {
 				const deletedStatus = response.data;
 				dispatch(deleteStatusSuccess(deletedStatus));

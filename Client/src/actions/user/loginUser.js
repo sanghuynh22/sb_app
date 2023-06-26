@@ -22,7 +22,7 @@ export const loginUser = (userData) => {
 	return (dispatch) => {
 		dispatch(loginUserRequest());
 		return axios
-			.post("http://localhost:3000/api/users/login", userData)
+			.post(`${process.env.REACT_APP_API_URL}/users/login`, userData)
 			.then((response) => {
 				const user = response.data;
 				dispatch(loginUserSuccess(user));

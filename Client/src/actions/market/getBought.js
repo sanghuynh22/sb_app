@@ -22,7 +22,7 @@ export const getBought = (idBuyer) => {
 	return (dispatch) => {
 		dispatch(getBoughtRequest());
 		return axios
-			.get(`http://localhost:3000/api/market/bought/${idBuyer}`)
+			.get(`${process.env.REACT_APP_API_URL}/market/bought/${idBuyer}`)
 			.then((response) => {
 				const boughtItems = response.data;
 				dispatch(getBoughtSuccess(boughtItems));

@@ -22,7 +22,9 @@ const Login = () => {
 	const { user } = useSelector((state) => state.user.loginUser);
 	const { currentUser } = useSelector((state) => state.user.auth);
 	useEffect(() => {
-		dispatch(fetchAllUsers());
+		dispatch(fetchAllUsers()).then(() => {
+			console.log("all login users: ", users);
+		});
 	}, []);
 	const handleClickCard = async (user) => {
 		dispatch(authLogin(user)).then((user) => {

@@ -14,6 +14,7 @@ const Register = () => {
 	const [password, setPassword] = useState("");
 	const [rePassword, setRePassword] = useState("");
 	const [mess, setMess] = useState("");
+	const [error, setError] = useState("");
 	const [isSee, setIsSee] = useState(false);
 	const handleClickPassword = () => {
 		setIsSee(!isSee);
@@ -24,6 +25,7 @@ const Register = () => {
 			password.length >= 6 &&
 			password === rePassword
 		) {
+			setError("");
 			dispatch(registerUser(username, password))
 				.then((user) => {
 					if (user) {
@@ -37,7 +39,8 @@ const Register = () => {
 					setMess(errMess);
 				});
 		} else {
-			setMess("Hãy nhập đầy đủ thông tin!");
+			setMess("");
+			setError("Hãy nhập đầy đủ thông tin!");
 		}
 	};
 	return (
@@ -109,8 +112,15 @@ const Register = () => {
 							</>
 						)}
 						{mess && (
-							<p style={{ fontSize: "12px", fontWeight: "bold", color: "red" }}>
+							<p
+								style={{ fontSize: "12px", fontWeight: "bold", color: "green" }}
+							>
 								{mess}
+							</p>
+						)}
+						{error && (
+							<p style={{ fontSize: "12px", fontWeight: "bold", color: "red" }}>
+								{error}
 							</p>
 						)}
 						<div

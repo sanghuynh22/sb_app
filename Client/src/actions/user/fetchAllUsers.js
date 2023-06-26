@@ -22,7 +22,7 @@ export const fetchAllUsers = () => {
 	return (dispatch) => {
 		dispatch(fetchAllUsersRequest());
 		return axios
-			.get("http://localhost:3000/api/users/")
+			.get(`${process.env.REACT_APP_API_URL}/users/`)
 			.then((response) => {
 				const users = response.data;
 				dispatch(fetchAllUsersSuccess(users));

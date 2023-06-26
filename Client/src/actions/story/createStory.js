@@ -22,7 +22,7 @@ export const createStory = (data) => {
 	return (dispatch) => {
 		dispatch(createStoryRequest());
 		return axios
-			.post("http://localhost:3000/api/story", data)
+			.post(`${process.env.REACT_APP_API_URL}/story`, data)
 			.then((response) => {
 				const story = response.data;
 				dispatch(createStorySuccess(story));

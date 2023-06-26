@@ -18,10 +18,11 @@ const marketRoutes = require("./routes/marketRoutes");
 
 const userSockets = {};
 const app = express();
+require("dotenv").config();
 
 app.use(
 	cors({
-		origin: "http://localhost:3001",
+		origin: process.env.WEB_IP_ADDRESS || "http://localhost:3001",
 		optionsSuccessStatus: 200,
 	})
 );
@@ -29,10 +30,10 @@ app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json({ limit: "50mb" }));
 // Connect to MongoDB database
-app.use((req, res, next) => {
-	res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
-	next();
-});
+// app.use((req, res, next) => {
+// 	res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
+// 	next();
+// });
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Define API endpoints
 app.use("/api/users", usersRoutes);
@@ -44,7 +45,7 @@ app.use("/api/watch", watchRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/market", marketRoutes);
 
-const server = app.listen(3000, () => {
+const server = app.listen(process.env.PORT || 3000, () => {
 	console.log("Server listening on port 3000");
 });
 const io = socketio(server);
@@ -142,12 +143,9 @@ io.on("connection", (socket) => {
 });
 
 mongoose
-	.connect(
-		"mongodb+srv://user1:0939449102@cluster0.1n7kp.mongodb.net/facebook_app?retryWrites=true&w=majority",
-		{
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-		}
-	)
+	.connect(process.env.MONGODB_ADDRESS, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
 	.then(() => console.log("MongoDB connected"))
 	.catch((err) => console.log(err));

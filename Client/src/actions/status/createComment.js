@@ -22,7 +22,7 @@ export const createComment = (data) => {
 	return (dispatch) => {
 		dispatch(createCommentRequest());
 		return axios
-			.post("http://localhost:3000/api/comment/", data)
+			.post(`${process.env.REACT_APP_API_URL}/comment/`, data)
 			.then((response) => {
 				const comment = response.data;
 				dispatch(createCommentSuccess(comment));

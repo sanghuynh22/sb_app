@@ -42,7 +42,7 @@ function ShortsSlider() {
 			<div className="home_shorts_content" ref={containerRef}>
 				<Link to={"/story"} className="home_shorts_content_option">
 					<img
-						src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?_nc_cat=1&ccb=1-7&_nc_sid=7206a8&_nc_ohc=iyixs2h8VAgAX9hcsbv&_nc_ht=scontent.fsgn2-6.fna&oh=00_AfBAmCNBeUa4Etn5v_Y32TOA6w4TOURfjGjGLe4DesmOoA&oe=647E67F8"
+						src={currentUser.avatar || avatar}
 						className="home_shorts_content_img"
 					/>
 					<div className="home_shorts_content_create">
@@ -54,8 +54,8 @@ function ShortsSlider() {
 				{users
 					?.filter((user) => user.stories.length !== 0)
 					.sort((a, b) => {
-						if (a._id === currentUser?._id) return -1; // nếu a là currentUser thì sắp trước
-						if (b._id === currentUser?._id) return 1; // nếu b là currentUser thì sắp trước
+						if (a._id === currentUser?._id) return -1;
+						if (b._id === currentUser?._id) return 1;
 						return 0;
 					})
 					.map((user, i) => {

@@ -22,7 +22,7 @@ export const hideStatus = ({ statusId, userId }) => {
 	return (dispatch) => {
 		dispatch(hideStatusRequest());
 		return axios
-			.put(`http://localhost:3000/api/users/hide-status`, {
+			.put(`${process.env.REACT_APP_API_URL}/users/hide-status`, {
 				statusId,
 				userId,
 			})

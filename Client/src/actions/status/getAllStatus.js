@@ -22,7 +22,7 @@ export const getAllStatus = () => {
 	return (dispatch) => {
 		dispatch(getAllStatusRequest());
 		return axios
-			.get("http://localhost:3000/api/status")
+			.get(`${process.env.REACT_APP_API_URL}/status`)
 			.then((response) => {
 				const statuses = response.data;
 				dispatch(getAllStatusSuccess(statuses));
