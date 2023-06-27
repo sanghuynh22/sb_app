@@ -48,21 +48,31 @@ const Login = () => {
 			<div className="login_container_left">
 				<p className="login_title">Sangbook</p>
 				<p className="login_title_p">Đăng nhập nhanh:</p>
-				<div className="login_card_container">
-					{users?.map((u) => (
-						<div
-							className="login_card"
-							key={u._id}
-							onClick={() => handleClickCard(u)}
-						>
-							<img
-								src={!u.avatar ? avatar : u.avatar}
-								className="login_card_img"
-							/>
-							<p className="login_card_p">{u.username}</p>
-						</div>
-					))}
-				</div>
+
+				{isLoading ? (
+					<div class="login_loading">
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</div>
+				) : (
+					<div className="login_card_container">
+						{users?.map((u) => (
+							<div
+								className="login_card"
+								key={u._id}
+								onClick={() => handleClickCard(u)}
+							>
+								<img
+									src={!u.avatar ? avatar : u.avatar}
+									className="login_card_img"
+								/>
+								<p className="login_card_p">{u.username}</p>
+							</div>
+						))}
+					</div>
+				)}
 			</div>
 			<div className="login_container_right">
 				<div className="login_bar_container">
