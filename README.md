@@ -1,4 +1,4 @@
-# SangBook
+# 📘 SangBook
 
 SangBook draws inspiration from FB (Facebook),it is a web application developed by Sang Huynh. This application serves as a platform for users to create personal profiles, connect with others, share information, photos, and videos. It also allows users to send private messages, shop, and engage in entertainment activities...
 
