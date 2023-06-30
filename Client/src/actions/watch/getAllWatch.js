@@ -24,6 +24,7 @@ export const getAllWatch = () => {
 		return axios
 			.get("http://localhost:3000/api/watch")
 			.then((response) => {
+				console.log("watches: ", response.data);
 				const watches = response.data;
 				dispatch(getAllWatchSuccess(watches));
 				return Promise.resolve(watches);

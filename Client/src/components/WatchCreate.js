@@ -2,12 +2,13 @@ import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IoMdClose } from "react-icons/io";
 import { createWatch } from "../actions/watch/createWatch";
+import { getAllWatch } from "../actions/watch/getAllWatch";
 
 const WatchCreate = ({ setIsCreate }) => {
 	const dispatch = useDispatch();
 	const fileRef = useRef();
 	const { currentUser } = useSelector((state) => state.user.auth);
-
+	const { isCreating } = useSelector((state) => state.watch.createWatch);
 	const [title, setTitle] = useState("");
 	const [fileReview, setFileReview] = useState(null);
 	const [file, setFile] = useState(null);
@@ -33,7 +34,10 @@ const WatchCreate = ({ setIsCreate }) => {
 		} else {
 			dispatch(
 				createWatch({ title: title, user: currentUser._id, file: file })
-			).then((res) => alert(`Đã tạo thành công Watch với video ${file.name}`));
+			).then((res) => {
+				dispatch(getAllWatch());
+				alert(`Đã tạo thành công Watch với video ${file.name}`);
+			});
 		}
 	};
 	return (
@@ -42,41 +46,59 @@ const WatchCreate = ({ setIsCreate }) => {
 				className="watchcreate_container"
 				onClick={(e) => e.stopPropagation()}
 			>
-				<div className="watchcreate_close" onClick={() => setIsCreate(false)}>
-					<IoMdClose className="watchcreate_close_icon" />
-				</div>
-				<div className="watchcreate_option">
-					<p className="watchcreate_title">Title</p>
-					<div className="watchcreate_option_text">
-						<input
-							type="text"
-							className="watchcreate_option_input"
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
-						/>
+				{isCreating ? (
+					<div class="login_loading loading_two">
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
 					</div>
-				</div>
-				<div className="watchcreate_option">
-					<p className="watchcreate_title">video</p>
-					<div
-						className="watchcreate_video"
-						onClick={(e) => handleClickFile(e)}
-					>
-						<p className="watchcreate_video_p">Tải video vào đây</p>
-					</div>
-					<input
-						type="file"
-						style={{ display: "none" }}
-						ref={fileRef}
-						onChange={(e) => handleUploadFile(e)}
-					/>
-					{fileReview && (
-						<video controls src={fileReview} class="watchcreate_video_src" />
-					)}
-				</div>
-				<div class="watchcreate_create" onClick={() => handleClickCreate()}>
-					<p>Tạo watch</p>
-				</div>
+				) : (
+					<>
+						<div
+							className="watchcreate_close"
+							onClick={() => setIsCreate(false)}
+						>
+							<IoMdClose className="watchcreate_close_icon" />
+						</div>
+						<div className="watchcreate_option">
+							<p className="watchcreate_title">Title</p>
+							<div className="watchcreate_option_text">
+								<input
+									type="text"
+									className="watchcreate_option_input"
+									value={title}
+									onChange={(e) => setTitle(e.target.value)}
+								/>
+							</div>
+						</div>
+						<div className="watchcreate_option">
+							<p className="watchcreate_title">video</p>
+							<div
+								className="watchcreate_video"
+								onClick={(e) => handleClickFile(e)}
+							>
+								<p className="watchcreate_video_p">Tải video vào đây</p>
+							</div>
+							<input
+								type="file"
+								style={{ display: "none" }}
+								ref={fileRef}
+								onChange={(e) => handleUploadFile(e)}
+							/>
+							{fileReview && (
+								<video
+									controls
+									src={fileReview}
+									class="watchcreate_video_src"
+								/>
+							)}
+						</div>
+						<div class="watchcreate_create" onClick={() => handleClickCreate()}>
+							<p>Tạo watch</p>
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);
