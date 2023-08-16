@@ -2,7 +2,6 @@
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
-	/* overflow: hidden; */
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
 		"Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
 		sans-serif;
@@ -244,16 +243,12 @@ code {
 	display: flex;
 	width: 100%;
 	height: 100%;
-	/* padding-top: 56px; */
-	/* margin-top: 56px; */
 	background-color: #18191a;
-	/* overflow-y: auto; */
 }
 .home_left {
 	position: relative;
 	padding-top: 60px;
 	flex: 1;
-	/* position: fixed; */
 }
 /* ------------------------------------------------------------------- */
 footer {
