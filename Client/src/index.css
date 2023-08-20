@@ -2273,7 +2273,6 @@ input[type="number"] {
 }
 .storyCreate_left_content {
 	display: flex;
-	/* background-color: #ccc; */
 	flex: 1;
 	flex-direction: column;
 	align-items: center;
@@ -2291,7 +2290,6 @@ input[type="number"] {
 .storyCreate_background {
 	margin-top: 50px;
 	width: 328px;
-	/* height:300px; */
 	border: 1px solid #3e4042;
 	display: flex;
 	flex-wrap: wrap;
@@ -2388,9 +2386,9 @@ input[type="number"] {
 	font-weight: bold;
 	font-size: 18px;
 	color: #fff;
-	-webkit-user-select: none; /* Safari */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
 .storyCreate_img_content.video {
