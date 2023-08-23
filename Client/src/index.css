@@ -2500,16 +2500,6 @@ input[type="number"] {
 	transition: width 0.2s linear;
 	z-index: 2;
 }
-/* .progress_bar::after {
-	position: absolute;
-	content: "";
-	background-color: #ccc;
-	height: 4px;
-	width: 100%;
-	left: 0;
-	top: 0;
-	
-} */
 /* ----------------------------------------------- */
 /* PROFILE */
 .profile {
