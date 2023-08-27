@@ -158,13 +158,10 @@ const StoryCreate = () => {
 		}
 	};
 	const handleLoadedMetadata = () => {
-		// Lấy thời lượng của video
 		const duration = videoRef.current.duration;
 
-		// Kiểm tra điều kiện
 		if (duration > 60) {
 			alert("Chỉ được upload video có độ dài trong 5 phút.");
-			// Xóa file video khỏi state
 			setVideoFile(null);
 			setVideoString("");
 		}

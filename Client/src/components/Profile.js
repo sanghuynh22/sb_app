@@ -2,27 +2,6 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllStatus } from "../actions/status/getAllStatus";
 import { useParams } from "react-router-dom";
-import { FaUserFriends } from "react-icons/fa";
-import { MdSmartDisplay } from "react-icons/md";
-import { HiOutlinePhotograph } from "react-icons/hi";
-import { IoMdSend, IoIosCloseCircleOutline } from "react-icons/io";
-import { TbShare3 } from "react-icons/tb";
-import {
-	BiVideoRecording,
-	BiDotsHorizontalRounde,
-	BiCommentDetail,
-	BiDotsHorizontalRounded,
-	BiShare,
-	BiComment,
-} from "react-icons/bi";
-import {
-	AiFillShop,
-	AiOutlinePlus,
-	AiFillPicture,
-	AiOutlineClose,
-	AiOutlineLike,
-} from "react-icons/ai";
-import { BsMessenger, BsBookFill, BsPlayCircleFill } from "react-icons/bs";
 import avatar from "../assets/images/avatar-mac-dinh.jpeg";
 import { formatDate } from "../time/formatTime";
 import Header from "./Header";
@@ -140,12 +119,10 @@ const Profile = () => {
 					}
 				}
 
-				// Resize the image using the canvas
 				canvas.width = width;
 				canvas.height = height;
 				ctx.drawImage(img, 0, 0, width, height);
 
-				// Convert the canvas back to a data URL
 				const imageType = "image/jpeg";
 				const dataURL = canvas.toDataURL(imageType);
 				setIsUploadImage(true);

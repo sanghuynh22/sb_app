@@ -17,24 +17,24 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 	const { currentUser } = useSelector((state) => state.user.auth);
 	const { users } = useSelector((state) => state.user.fetchAllUsers);
 	const [messages, setMessages] = useState([
-		{
-			from: currentUser._id,
-			to: "user2_id",
-			content: "Hello user2!",
-			createdAt: new Date("2023-05-24T09:00:00Z"),
-		},
-		{
-			from: "user2_id",
-			to: currentUser._id,
-			content: "Hi there!",
-			createdAt: new Date("2023-05-24T09:01:00Z"),
-		},
-		{
-			from: "user1_id",
-			to: currentUser._id,
-			content: "How are you?",
-			createdAt: new Date("2023-05-24T09:02:00Z"),
-		},
+		// {
+		// 	from: currentUser._id,
+		// 	to: "user2_id",
+		// 	content: "Hello user2!",
+		// 	createdAt: new Date("2023-05-24T09:00:00Z"),
+		// },
+		// {
+		// 	from: "user2_id",
+		// 	to: currentUser._id,
+		// 	content: "Hi there!",
+		// 	createdAt: new Date("2023-05-24T09:01:00Z"),
+		// },
+		// {
+		// 	from: "user1_id",
+		// 	to: currentUser._id,
+		// 	content: "How are you?",
+		// 	createdAt: new Date("2023-05-24T09:02:00Z"),
+		// },
 	]);
 	useEffect(() => {
 		dispatch(fetchAllUsers());

@@ -8,7 +8,7 @@ import avatar from "../assets/images/avatar-mac-dinh.jpeg";
 
 function ShortsSlider() {
 	const dispatch = useDispatch();
-	const shorts = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+	const shorts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	const containerRef = useRef(null);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const { currentUser } = useSelector((state) => state.user.auth);

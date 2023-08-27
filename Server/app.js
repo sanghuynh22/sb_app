@@ -30,7 +30,6 @@ app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json({ limit: "50mb" }));
 
-console.log(__dirname);
 app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 
 app.use("/api/users", usersRoutes);
@@ -60,7 +59,6 @@ io.on("connection", (socket) => {
 			{ new: true }
 		)
 			.then((user) => {
-				// Gửi sự kiện loginSuccess cho client-side
 				io.emit("loginSuccess");
 
 				console.log(`${user.username} đã đăng nhập`);
@@ -111,7 +109,6 @@ io.on("connection", (socket) => {
 			{ new: true }
 		)
 			.then((user) => {
-				// Gửi sự kiện disconnectSuccess cho client-side
 				io.emit("disconnectSuccess");
 
 				console.log(`${user.username} đã ngắt kết nối vào ${user.timeOff}`);
@@ -128,7 +125,6 @@ io.on("connection", (socket) => {
 			{ new: true }
 		)
 			.then((user) => {
-				// Gửi sự kiện disconnectSuccess cho client-side
 				io.emit("disconnectSuccess");
 
 				console.log(`${user?.username} đã ngắt kết nối vào ${user?.timeOff}`);
