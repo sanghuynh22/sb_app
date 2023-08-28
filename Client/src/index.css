@@ -988,7 +988,6 @@ footer {
 	justify-content: center;
 }
 .comment_create_bar {
-	/* height: 50%; */
 	flex: 1;
 	display: flex;
 	align-items: center;
@@ -1270,8 +1269,6 @@ footer {
 	padding-left: 5%;
 }
 .friend_request {
-	/* flex-basis: calc(16.666% - (2 * 10px)); */
-	/* min-width: 214px; */
 	max-width: 180xp;
 	min-height: 375px;
 	display: flex;
