@@ -8,7 +8,7 @@ exports.readAllStatus = async (req, res) => {
 				path: "comments",
 				populate: {
 					path: "user",
-					select: "-password", // Loại bỏ trường password của user
+					select: "-password",
 				},
 			})
 			.sort({ createdAt: -1 });
@@ -29,7 +29,6 @@ exports.createStatus = async (req, res) => {
 	}
 };
 
-// can params
 exports.deleteStatus = async (req, res) => {
 	try {
 		const { statusId } = await req.params;
@@ -89,10 +88,8 @@ exports.likeStatus = async (req, res) => {
 		const index = status.likes.indexOf(userId);
 
 		if (index !== -1) {
-			// Nếu người dùng đã like thì xóa người dùng khỏi mảng likes
 			status.likes.splice(index, 1);
 		} else {
-			// Ngược lại, thêm người dùng vào mảng likes
 			status.likes.push(userId);
 		}
 
