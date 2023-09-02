@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "./index.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
@@ -7,15 +7,6 @@ import { FaUserFriends } from "react-icons/fa";
 import { MdSmartDisplay } from "react-icons/md";
 import { HiOutlinePhotograph } from "react-icons/hi";
 import { IoMdSend, IoIosCloseCircleOutline } from "react-icons/io";
-import { TbShare3 } from "react-icons/tb";
-import {
-	BiVideoRecording,
-	BiDotsHorizontalRounde,
-	BiCommentDetail,
-	BiDotsHorizontalRounded,
-	BiShare,
-	BiComment,
-} from "react-icons/bi";
 import {
 	AiFillShop,
 	AiOutlinePlus,
@@ -45,24 +36,26 @@ const Home = () => {
 	const [isReels, setIsReels] = useState(false);
 	const [text, setText] = useState("");
 	const [image, setImage] = useState("");
+	const [userOnline, setUserOnline] = useState([]);
 	const { currentUser } = useSelector((state) => state.user.auth);
 	const { users } = useSelector((state) => state.user.fetchAllUsers);
 	useEffect(() => {
 		dispatch(fetchAllUsers());
-
+		console.log("socketID::", socket.id);
+		socket.on("getOnlineUsers", async (data) => {
+			setUserOnline(Object.keys(data));
+			console.log("usersoneline::", userOnline);
+		});
 		// socket.on("loginSuccess", () => {
 		// 	dispatch(fetchAllUsers());
 		// });
 		// socket.on("disconnectSucces", () => {
 		// 	dispatch(fetchAllUsers());
 		// });
-	}, [socket]);
-	socket.on("loginSuccess", () => {
-		dispatch(fetchAllUsers());
-	});
-	socket.on("disconnectSuccess", () => {
-		dispatch(fetchAllUsers());
-	});
+		return () => {
+			socket.off("getOnlineUsers");
+		};
+	}, [socket, userOnline, setUserOnline]);
 	const HandleClickStory = () => {
 		setIsReels(false);
 	};
@@ -135,6 +128,10 @@ const Home = () => {
 		setSelectedFriend(friend);
 		setChat(true);
 	};
+	const isOnline = (user) => {
+		return userOnline?.some((u) => u == user);
+	};
+
 	return (
 		<div className="container">
 			<Header />
@@ -256,10 +253,10 @@ const Home = () => {
 						{users
 							?.filter((user) => user._id !== currentUser._id)
 							.map((user, i) => (
-								<>
+								<React.Fragment key={user._id}>
 									<div
 										className={
-											user.online
+											isOnline(user._id)
 												? "home_right_friend online"
 												: "home_right_friend"
 										}
@@ -276,12 +273,13 @@ const Home = () => {
 									</div>
 									{chat && (
 										<ChatBox
+											isOnline={isOnline}
 											setChat={setChat}
 											friend={selectedFriend}
 											setSelectedFriend={setSelectedFriend}
 										/>
 									)}
-								</>
+								</React.Fragment>
 							))}
 					</div>
 				</div>

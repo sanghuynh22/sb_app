@@ -7,8 +7,9 @@ import avatar from "../assets/images/avatar-mac-dinh.jpeg";
 import io from "socket.io-client";
 import { getSocket } from "../socket";
 import { fetchAllUsers } from "../actions/user/fetchAllUsers";
+import { fetchMessages } from "../actions/user/fetchMessages";
 
-const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
+const ChatBox = ({ setChat, friend, setSelectedFriend, isOnline }) => {
 	const dispatch = useDispatch();
 	const contentRef = useRef();
 	const socket = getSocket();
@@ -16,6 +17,7 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 	const [timeOff, setTimeOff] = useState(null);
 	const { currentUser } = useSelector((state) => state.user.auth);
 	const { users } = useSelector((state) => state.user.fetchAllUsers);
+	const { mess } = useSelector((state) => state.user.fetchMessages);
 	const [messages, setMessages] = useState([
 		// {
 		// 	from: currentUser._id,
@@ -40,6 +42,14 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 		dispatch(fetchAllUsers());
 	}, []);
 	useEffect(() => {
+		dispatch(
+			fetchMessages({ userId: currentUser._id, receiverId: friend._id })
+		).then((data) => {
+			setMessages([...data]);
+			console.log("data:::", ...data);
+		});
+	}, []);
+	useEffect(() => {
 		contentRef.current.scrollTop = contentRef.current.scrollHeight;
 	}, [messages]);
 	useEffect(() => {
@@ -53,15 +63,30 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 		});
 	}, [friend]);
 
+	useEffect(() => {
+		if (socket === null) return;
+		socket.on("getMessages", (data) => {
+			if (data.to != currentUser._id) return;
+			setMessages((prev) => [...prev, data]);
+			console.log("getMessage:::", data);
+		});
+
+		return () => {
+			socket.off("getMessages");
+		};
+	}, [socket, messages]);
+
 	const sortedMessages = useMemo(() => {
-		return messages.sort(
+		return messages?.sort(
 			(a, b) => new Date(a.createdAt) - new Date(b.createdAt)
 		);
 	}, [messages]);
 
 	const renderMessages = useMemo(() => {
 		return sortedMessages.map((message, index) => {
-			const isFromCurrentUser = message.from === currentUser._id;
+			console.log("messages::::", message);
+			console;
+			const isFromCurrentUser = message.from == currentUser._id;
 			const messageClass = isFromCurrentUser
 				? "chatbox_content_message_right"
 				: "chatbox_content_message_left";
@@ -83,18 +108,29 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 
 	const handleSendMessage = async () => {
 		if (text.trim() !== "") {
-			await socket.emit("sendMessage", {
+			let messData = {
 				userId: currentUser._id,
 				recipientId: friend._id,
 				message: text,
-			});
-			socket.on("messageReceive", (data) => {
-				setText("");
-				setMessages([data, ...messages]);
-			});
-			socket.on("newMessage", (newMessage) => {
-				setMessages([newMessage, ...messages]);
-			});
+			};
+			await socket.emit("sendMessage", messData);
+			setMessages((prev) => [
+				...prev,
+				{
+					from: currentUser._id,
+					to: friend._id,
+					content: text,
+					createdAt: new Date(),
+				},
+			]);
+			setText("");
+			// socket.on("messageReceive", (data) => {
+			// 	setText("");
+			// 	setMessages([data, ...messages]);
+			// });
+			// socket.on("newMessage", (newMessage) => {
+			// 	setMessages([newMessage, ...messages]);
+			// });
 		} else {
 			alert("khong co text");
 		}
@@ -115,7 +151,7 @@ const ChatBox = ({ setChat, friend, setSelectedFriend }) => {
 					<img src={friend.avatar || avatar} className="chatbox_top_info_img" />
 					<div className="chatbox_top_info_right">
 						<p className="chatbox_top_info_p">{friend.username}</p>
-						{users.find((user) => user._id === friend._id).timeOff ? (
+						{!isOnline(friend._id) ? (
 							<p className="chatbox_top_info_timeoff">
 								hoạt động{" "}
 								{formatDate(
